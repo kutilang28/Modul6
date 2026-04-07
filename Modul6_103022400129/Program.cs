@@ -1,13 +1,24 @@
-﻿namespace Modul6_103022400129
+﻿using System.Diagnostics;
+
+namespace Modul6_103022400129
 {
     class SayaMusicTrack
     {
         private int id;
-        string title;
+        public string title;
         private int playCount;
 
         public SayaMusicTrack(String title)
         {
+            if (title.Length > 200)
+            {
+                throw new Exception("judul tidak boleh lebih dari 200 kata");
+            }
+            if (title == null)
+            {
+                throw new Exception("Judul tidak boleh ksoosng");
+            }
+
             this.title = title;
             Random random = new Random();
             this.id = random.Next(10000, 99999);
@@ -15,6 +26,24 @@
         }
         public void IncreasePlayCount(int count)
         {
+            if (this.playCount > 25000000) {
+                throw new Exception("playcount tidak boleh lebih dari 25jt");
+            }
+            if (this.playCount < 0)
+            {
+                throw new Exception("tidak boleh bilangan negatif");
+            }
+            try
+            {
+                checked
+                {
+                    this.playCount += count;
+                }
+            }
+            catch
+            {
+                Console.WriteLine("error: overflow");
+            }
             this.playCount += count;
         }
         public void PrintTrackDetails()
@@ -35,6 +64,11 @@
 
         public SayaMusicUser(String username)
         {
+            if (username.Length > 100)
+            {
+                throw new Exception("Username tidak boleh lebih dari 100 hruf");
+            }
+            Debug.Assert(username != null, "username tidak boleh ksoneg");
             Random random = new Random();
             this.id = random.Next(10000, 99999);
             this.username = username;
@@ -52,15 +86,24 @@
 
         public void AddTrack(SayaMusicTrack track)
         {
+            if (track == null)
+            {
+                throw new Exception("isi track tdk boleh gaada");
+            }
+            if(track.GetPlaycount() > int.MaxValue)
+            {
+                throw new Exception("tidak boleh lebih dari batas masksimum integer");
+            }
             uploadedTracks.Add(track);
         }
 
         public void PrintAllRecord()
         {
             Console.WriteLine($"Username: {this.username}");
-            foreach (var item in uploadedTracks)
+            int max = uploadedTracks.Count > 8 ? 8 : uploadedTracks.Count;
+            for (int i = 0; i < max; i++)
             {
-                item.PrintTrackDetails();
+                Console.WriteLine($"Track: {i+1}, judul : {uploadedTracks[i].title}");
             }
 
             Console.WriteLine();
@@ -106,6 +149,8 @@
             user.AddTrack(track10);
 
             user.PrintAllRecord();
+            
+
         }
     }
 }
